@@ -13,9 +13,9 @@ const Navbar = () => {
           <Link to="/flip">FlipCard</Link>
         </li>
         <li>
-          <Link to="/slider">Slider</Link>
+          <Link to="/sliderpage">Slider</Link>
         </li>
-        <li>page3</li>
+        <li><Link to="/card3d">CARD3D</Link></li>
       </ul>
     </Wrapper>
   )
