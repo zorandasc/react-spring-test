@@ -12,7 +12,9 @@ const Navbar = () => {
         <li>
           <Link to="/flip">FlipCard</Link>
         </li>
-        <li>page2</li>
+        <li>
+          <Link to="/slider">Slider</Link>
+        </li>
         <li>page3</li>
       </ul>
     </Wrapper>
