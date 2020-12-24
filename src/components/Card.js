@@ -20,6 +20,7 @@ const Card = () => {
 };
 
 const Wrapper=styled(animated.div)`
+margin-top:10rem;
     width: 45ch;
     height: 45ch;
     background: gray;

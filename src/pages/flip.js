@@ -49,6 +49,7 @@ const Wrapper = styled.div`
   align-items: center;
   overflow: hidden;
   .card {
+    margin-top:10rem;
     width: 45ch;
     height: 45ch;
     display: flex;

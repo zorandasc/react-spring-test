@@ -44,6 +44,7 @@ const MousePx = () => {
 }
 
 const Wrapper = styled.div`
+margin-top:20rem;
   width: 80%;
   height: 80%;
   border: 1px solid white;

@@ -10,16 +10,28 @@ const Navbar = () => {
       </div>
       <ul className="lista">
         <li>
-          <Link to="/flip">FlipCard</Link>
+          <Link to="/flip">FLIPCARD</Link>
         </li>
         <li>
-          <Link to="/sliderpage">Slider</Link>
+          <Link to="/sliderpage">SLIDER</Link>
         </li>
         <li>
           <Link to="/card3d">CARD3D</Link>
         </li>
         <li>
-          <Link to="/mousepara">MOUSE PARALLEX</Link>
+          <Link to="/mousepara">MOUSE</Link>
+        </li>
+        <li>
+          <Link to="/click">CLICK</Link>
+        </li>
+        <li>
+          <Link to="/scriptpage">SCRIPT</Link>
+        </li>
+        <li>
+          <Link to="/measure">MEASURE</Link>
+        </li>
+        <li>
+          <Link to="/klipici">KLIPICI</Link>
         </li>
       </ul>
     </Wrapper>
@@ -31,7 +43,7 @@ const Wrapper = styled.nav`
   top: 0;
   left: 0;
   width: 100%;
-  height: 4rem;
+  height: 6rem;
   z-index: 1000;
   background: transparent;
   color: whitesmoke;
@@ -46,10 +58,11 @@ const Wrapper = styled.nav`
   }
   .lista {
     list-style: none;
-    display: flex;
+    display: grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
     li {
-      margin-left: 2rem;
-      font-size: 1.3rem;
+      margin-left: 1rem;
+      font-size: 1rem;
     }
   }
 `
