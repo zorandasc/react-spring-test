@@ -15,7 +15,12 @@ const Navbar = () => {
         <li>
           <Link to="/sliderpage">Slider</Link>
         </li>
-        <li><Link to="/card3d">CARD3D</Link></li>
+        <li>
+          <Link to="/card3d">CARD3D</Link>
+        </li>
+        <li>
+          <Link to="/mousepara">MOUSE PARALLEX</Link>
+        </li>
       </ul>
     </Wrapper>
   )
