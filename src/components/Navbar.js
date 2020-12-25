@@ -33,6 +33,12 @@ const Navbar = () => {
         <li>
           <Link to="/klipici">KLIPICI</Link>
         </li>
+        <li>
+          <Link to="/hello">HELLO</Link>
+        </li>
+        <li>
+          <Link to="/balonja">BALONJA</Link>
+        </li>
       </ul>
     </Wrapper>
   )
@@ -59,7 +65,7 @@ const Wrapper = styled.nav`
   .lista {
     list-style: none;
     display: grid;
-    grid-template-columns:1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     li {
       margin-left: 1rem;
       font-size: 1rem;
