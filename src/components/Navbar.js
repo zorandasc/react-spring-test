@@ -16,6 +16,9 @@ const Navbar = () => {
           <Link to="/sliderpage">SLIDER</Link>
         </li>
         <li>
+          <Link to="/sliderpage2">SLIDER2</Link>
+        </li>
+        <li>
           <Link to="/card3d">CARD3D</Link>
         </li>
         <li>
