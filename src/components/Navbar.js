@@ -42,6 +42,9 @@ const Navbar = () => {
         <li>
           <Link to="/balonja">BALONJA</Link>
         </li>
+        <li>
+          <Link to="/lists">LISTS</Link>
+        </li>
       </ul>
     </Wrapper>
   )
