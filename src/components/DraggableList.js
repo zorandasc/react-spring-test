@@ -25,12 +25,19 @@ const finicspring = (
   //kad je somi pritisnut, y sa desne starane je ono sto se mjenja (somi) u useGestureeu funkcij. A y sa lijeve strane je IPSILON polozaj itema
   //KADA SE KLIKNE misom down, GESTURE, POMJERAJU SE SVI SPRINGOVI (index ide od o do 3) I ZA SVE CE BITI ONAJ DONJI OBJEKAT,  OSIM ZA selectovani item index===originalIndex, ZA KOGA CE VRIJEDITI GORNJI OBJEKAT
   return down && index === originalIndex
-    ? { y: currentIndex * 100 + y, scale: 1.1, zIndex: "1", shadow: 15 }
+    ? {
+        y: currentIndex * 100 + y,
+        scale: 1.1,
+        zIndex: "1",
+        shadow: 15,
+        immediate: n => n === "y" || n === "zIndex",
+      }
     : { y: trenutniNiz.indexOf(index) * 100, scale: 1, zIndex: "0", shadow: 1 }
 }
 
 const DraggableList = ({ items }) => {
   //TRENUTNRI NIZ je niz koji sadrzi ove brojeve 0,1,2,3 i memoris trenutni redoslijed
+  //IZGLEDA DA MOZE I BEZ useref()
   const trenutniNiz = useRef(items.map((_, index) => index))
   //console.log(trenutniNiz.current)
 
