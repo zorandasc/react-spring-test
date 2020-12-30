@@ -5,6 +5,12 @@ import { useGesture } from "react-use-gesture"
 import clamp from "lodash-es/clamp"
 import swap from "lodash-move"
 
+//The _.clamp() method is used to clamp number 
+//within the inclusive range within the lower and upper bounds.
+//_.clamp(number, lower, upper)
+
+//_.swap(array, fromIndex, toIndex)
+
 //helperska fukkcija koja je trebala da zamjeni swap od loadasha
 const swapArrayLocs = (arr, index1, index2) => {
   ;[arr[index1], arr[index2]] = [arr[index2], arr[index1]]
