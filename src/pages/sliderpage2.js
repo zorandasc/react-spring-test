@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { useSpring, animated, interpolate } from "react-spring"
-import { useGesture, useDrag } from "react-use-gesture"
+import { useSpring, animated } from "react-spring"
+import { useGesture } from "react-use-gesture"
 
 import Layout from "../components/layout"
 
