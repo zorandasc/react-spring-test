@@ -48,6 +48,12 @@ const Navbar = () => {
         <li>
           <Link to="/pager">PAGER</Link>
         </li>
+        <li>
+          <Link to="/deck">DECK</Link>
+        </li>
+        <li>
+          <Link to="/blob">BLOB</Link>
+        </li>
       </ul>
     </Wrapper>
   )
