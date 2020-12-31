@@ -2,7 +2,7 @@ import React, { useRef } from "react"
 import styled from "styled-components"
 import clamp from "lodash-es/clamp"
 import { useSprings, animated } from "react-spring"
-import { useGesture, useDrag } from "react-use-gesture"
+import { useDrag } from "react-use-gesture"
 
 import Layout from "../components/layout"
 
@@ -25,12 +25,25 @@ const Pager = () => {
     display: "block",
   }))
   const bind = useDrag(
-    ({ down, movement: [xDelta], direction: [xDir], distance, cancel }) => {
+    ({
+      down,
+      movement: [xDelta],
+      direction: [xDir],
+      distance,
+      cancel,
+      canceled,
+    }) => {
       //ako je down i pomjeraj misa je pola od window.innerwidth, onda
-      if (down && distance > window.innerWidth / 2) {
+      //??? OVO CANCELED SAM JA KASNIJE DODAO NA OSNOVU:
+      //https://github.com/pmndrs/react-use-gesture/issues/52
+      //DOLE SAM DODAO I UNUTAR SPRINGONJE
+      if (down && distance > window.innerWidth / 2 && !canceled) {
         //interupt gesture i uradi nesto ondonso ppromjeni kurent index
         //current index je prethodni current index  +1 ili -1 u zavisnosti od
         //pomjeraja misa u desnu ili lijevu stranu
+        //canceled kasnije dodano bog nekih porblema
+        //https://github.com/pmndrs/react-use-gesture/issues/52
+
         cancel(
           (index.current = clamp(
             index.current + (xDir > 0 ? -1 : 1),
@@ -38,7 +51,6 @@ const Pager = () => {
             pages.length - 1
           ))
         )
-        console.log("index.current", index.current)
       }
 
       //i ide od 0 do 3
@@ -56,9 +68,12 @@ const Pager = () => {
         if (i < index.current - 1 || i > index.current + 1)
           return { display: "none" }
         //ONI KOJI SU ISPOD cuureent>0 BICE TRANSILARANI U LIJEVO DOK CE OSTALI PRATITI MISA xMov
-        const x = (i - index.current) * window.innerWidth + (down ? xDelta : 0)
+        const x =
+          (i - index.current) * window.innerWidth +
+          (down && !canceled ? xDelta : 0)
         //skaliranje u odnosu na distancu
-        const sc = down ? 1 - distance / window.innerWidth / 2 : 1
+        //KADA SE PRODJ POLLOVINA WINDOWA A MISonja JOS NIJE SPUSTEN sc i x CE BITI TRUE, a da bi bili false, da bi se sve vratio u normalu, stavio sam !canceled sto ce postati false nakon cancel() gore
+        const sc = down && !canceled ? 1 - distance / window.innerWidth / 2 : 1
         return { x, sc, display: "block" }
       })
     }
@@ -106,7 +121,6 @@ const Wrapper = styled.div`
   overflow: hidden;
 
   > div {
-    border: 2px solid black;
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -115,7 +129,7 @@ const Wrapper = styled.div`
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
-      border: 2px solid white;
+
       width: 100%;
       height: 100%;
       will-change: transform;
