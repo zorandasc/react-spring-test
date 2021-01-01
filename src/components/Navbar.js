@@ -57,6 +57,9 @@ const Navbar = () => {
         <li>
           <Link to="/trails">TRAILS</Link>
         </li>
+        <li>
+          <Link to="/chain">CHAIN</Link>
+        </li>
       </ul>
     </Wrapper>
   )
