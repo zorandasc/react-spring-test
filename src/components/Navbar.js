@@ -54,6 +54,9 @@ const Navbar = () => {
         <li>
           <Link to="/blob">BLOB</Link>
         </li>
+        <li>
+          <Link to="/trails">TRAILS</Link>
+        </li>
       </ul>
     </Wrapper>
   )
