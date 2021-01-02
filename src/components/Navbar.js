@@ -60,6 +60,12 @@ const Navbar = () => {
         <li>
           <Link to="/chain">CHAIN</Link>
         </li>
+        <li>
+          <Link to="/transition">TRANS</Link>
+        </li>
+        <li>
+          <Link to="/autotrans">AUTOTRANS</Link>
+        </li>
       </ul>
     </Wrapper>
   )
