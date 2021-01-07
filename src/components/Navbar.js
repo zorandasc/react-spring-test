@@ -67,7 +67,11 @@ const Navbar = () => {
           <Link to="/autotrans">AUTOTRANS</Link>
         </li>
         <li>
+<<<<<<< HEAD
           <Link to="/mojslider">MOJSLIDONJA</Link>
+=======
+          <Link to="/sliders">SLIDERS</Link>
+>>>>>>> 13677644d1366d4131ae5782a2ff5b227d952a39
         </li>
       </ul>
     </Wrapper>
