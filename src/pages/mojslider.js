@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import styled from "styled-components"
-import { useSprings, animated, config } from 'react-spring'
+import { useSprings, animated,interpolate,config } from 'react-spring'
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
+const trans=(x,r)=>`perspective(1000px) translateX(calc(100% * ${x})) rotateY(calc(-45deg*${r}))`
+
 const Mojslider = () => {
     const [slideIndex, setSlideIndex] = useState(0)
 
+    const from =i=>({x:0,rot:0})
+    const to=i=>{
+        let index=slides.length + (slideIndex - i)
+        return {x:index, rot:index === 0 ? 0 : index > 0 ? 1 : -1 }}
+
+
     const [springs, setSprings] = useSprings([...slides, ...slides, ...slides].length,
-        i => ({ x: slides.length + (slideIndex - i), from: { x: 0 }, config: config.gentle }))
+        i => ({ ...to(i), from: { ...from(i) }, config: config.wobbly }))
 
     const handleNext = () => {
         setSlideIndex((slideIndex + 1) % 5)
-        console.log(slideIndex)
-        setSprings(i => ({ x: slides.length + (slideIndex - i) }))
+        setSprings(i => ({ ...to(i) }))
     }
     const handlePrev = () => {
         setSlideIndex(slideIndex === 0 ? slides.length - 1 : slideIndex - 1)
-        setSprings(i => ({ x: slides.length + (slideIndex - i) }))
+        setSprings(i => ({ ...to(i) }))
 
     }
 
@@ -27,8 +34,8 @@ const Mojslider = () => {
         <Layout>
             <Wrapper>
                 <div className="slides">
-                    {springs.map(({ x }, i) => {
-
+                    {springs.map(({ x, rot }, i) => {
+                        //i ide od 0 do 3*length
                         //const active = offset === 0 ? true : null;
 
                         return (
@@ -39,8 +46,7 @@ const Mojslider = () => {
                                 <animated.div className="slideContent"
                                     style={{
                                         backgroundImage: `url(${slides[i % slides.length].image})`,
-                                        transform: x.interpolate(x => `perspective(1000px) 
-                                        translateX(calc(100% * ${x})) rotateY(calc(-45deg*${x === 0 ? 0 : x > 0 ? 1 : -1})) `)
+                                        transform:interpolate([x,rot], trans )
                                     }}>
 
                                 </animated.div>
