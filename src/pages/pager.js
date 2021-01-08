@@ -72,7 +72,9 @@ const Pager = () => {
           (i - index.current) * window.innerWidth +
           (down && !canceled ? xDelta : 0)
         //skaliranje u odnosu na distancu
-        //KADA SE PRODJ POLLOVINA WINDOWA A MISonja JOS NIJE SPUSTEN sc i x CE BITI TRUE, a da bi bili false, da bi se sve vratio u normalu, stavio sam !canceled sto ce postati false nakon cancel() gore
+        //KADA SE PRODJ POLLOVINA WINDOWA A MISonja JOS NIJE SPUSTEN sc i x CE BITI TRUE, 
+        //a da bi bili false, da bi se sve vratio u normalu, 
+        //stavio sam !canceled sto ce postati false nakon cancel() gore
         const sc = down && !canceled ? 1 - distance / window.innerWidth / 2 : 1
         return { x, sc, display: "block" }
       })

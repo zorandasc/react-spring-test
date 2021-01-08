@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import styled from "styled-components"
-//import { useSpring, animated } from 'react-spring'
+import { useSprings, animated, config } from 'react-spring'
 
 import Layout from "../components/layout"
-import Slide from "../components/Slide"
+//import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
 const Mojslider = () => {
     const [slideIndex, setSlideIndex] = useState(0)
 
+    const [springs, setSprings] = useSprings([...slides, ...slides, ...slides].length,
+        i => ({ x: slides.length + (slideIndex - i), from: { x: 0 }, config: config.gentle }))
 
     const handleNext = () => {
-        setSlideIndex((slideIndex + 1) % slides.length)
+        setSlideIndex((slideIndex + 1) % 5)
+        console.log(slideIndex)
+        setSprings(i => ({ x: slides.length + (slideIndex - i) }))
     }
     const handlePrev = () => {
-
-        slideIndex === 0 ?
-            setSlideIndex(slides.length - 1) :
-            setSlideIndex(slideIndex - 1)
+        setSlideIndex(slideIndex === 0 ? slides.length - 1 : slideIndex - 1)
+        setSprings(i => ({ x: slides.length + (slideIndex - i) }))
 
     }
 
@@ -25,35 +27,24 @@ const Mojslider = () => {
         <Layout>
             <Wrapper>
                 <div className="slides">
+                    {springs.map(({ x }, i) => {
 
+                        //const active = offset === 0 ? true : null;
 
-                    {[...slides, ...slides, ...slides].map((slide, i) => {
-                        let offset = slides.length + (slideIndex - i)
-                        const active = offset === 0 ? true : null;
-                        let dir = offset === 0 ? 0 : offset > 0 ? 1 : -1
                         return (
-                            <div className="slide" >
-                                <div className="slideBackground"
+                            <animated.div key={i} className="slide"
+                                style={{
+
+                                }} >
+                                <animated.div className="slideContent"
                                     style={{
-                                        backgroundImage: `url('${slide.image}')`,
-                                        transform: `translateX(calc(10% * ${dir}))`
+                                        backgroundImage: `url(${slides[i % slides.length].image})`,
+                                        transform: x.interpolate(x => `perspective(1000px) 
+                                        translateX(calc(100% * ${x})) rotateY(calc(-45deg*${x === 0 ? 0 : x > 0 ? 1 : -1})) `)
                                     }}>
-                                </div>
-                                <div className="slideContent"
-                                    style={{
-                                        backgroundImage: `url('${slide.image}')`,
-                                        transform: `perspective(1000px) 
-                                translateX(calc(100% * ${offset}))
-                                rotateY(calc(-45deg * ${dir}))
-                                `
-                                    }}>
-                                    <div className="slideContentInner">
-                                        <h2 className="slideTitle">{slide.title}</h2>
-                                        <h3 className="slideSubtitle">{slide.subtitle}</h3>
-                                        <p className="slideDescription">{slide.description}</p>
-                                    </div>
-                                </div>
-                            </div>
+
+                                </animated.div>
+                            </animated.div>
                         )
                     })}
                     <button className="prev" onClick={handlePrev}>PREV</button>
@@ -64,6 +55,8 @@ const Mojslider = () => {
         </Layout>
     );
 };
+
+
 
 const Wrapper = styled.div`
   width: 100vw;
