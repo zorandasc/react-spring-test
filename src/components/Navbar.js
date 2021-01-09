@@ -82,7 +82,7 @@ const Wrapper = styled.nav`
   height: 6rem;
   z-index: 1000;
   background: transparent;
-  color: whitesmoke;
+  color: black;
   display: flex;
   justify-content: space-around;
   align-items: center;
