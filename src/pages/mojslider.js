@@ -1,12 +1,13 @@
 import React, { useRef } from "react"
 import styled from "styled-components"
-import { useSprings, animated, interpolate, config } from "react-spring"
+import { useSprings, useSpring, animated, interpolate, config } from "react-spring"
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
-const from = i => ({ x: 0, rot: 0, opacity: 0 })
+
+const from = i => ({ x: 0, rot: 0, opacity: 0 ,text:1})
 
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
@@ -14,15 +15,22 @@ const to = (i, slideIndex) => {
     x: index,
     rot: index === 0 ? 0 : index > 0 ? 1 : -1,
     opacity: index === 0 ? 1 : 0.6,
+    text:index === 0 ? 0 : 1,
   }
 }
 
 const trans = (x, r) =>
   `perspective(1000px) translateX(calc(100% * ${x})) rotateY(calc(-45deg*${r}))`
 
-const Mojslider = () => {
-  //const [slideIndex, setSlideIndex] = useState(0)
 
+  const calc = (x, y) => [-(y - window.innerHeight / 2) / 20, (x - window.innerWidth / 2) / 20, 1.1]
+  const transMouse = (x, y, s) => `perspective(1000px)  rotateY(calc(${x} * 45deg))
+  rotateX(calc(${y} * -45deg)) scale(${s})`
+
+
+const Mojslider = () => {
+
+  //ne dovodi do rerenderovanja  komponente za razliku od usestate
   const slideIndex = useRef(0)
 
   const [springs, setSprings] = useSprings(
@@ -34,6 +42,9 @@ const Mojslider = () => {
     })
   )
 
+  const [props, set] = useSpring(() => ({ xys: [0, 0, 1], config: { mass: 5, tension: 350, friction: 40 } }))
+
+
   const handleNext = () => {
     slideIndex.current = (slideIndex.current + 1) % 5
     setSprings(i => ({ ...to(i, slideIndex.current) }))
@@ -44,15 +55,20 @@ const Mojslider = () => {
     setSprings(i => ({ ...to(i, slideIndex.current) }))
   }
 
+  
   return (
     <Layout>
       <Wrapper>
         <div className="slides">
-          {springs.map(({ x, rot, opacity }, i) => {
+          {springs.map(({ x, rot, opacity,text }, i) => {
             //i ide od 0 do 14
-            let image = slides[i % slides.length].image
+            //prave vrijednosti,  se ponavljaju da bi se dobio efekat
+            //kontinualnosti, stog j ide
+            let j=i % slides.length
+            //j ide od 0 do 4
             return (
-              <animated.div key={i} className="slide">
+              <animated.div key={i} className="slide" 
+                >
                 <animated.div
                   className="slideBackground"
                   style={{
@@ -60,30 +76,42 @@ const Mojslider = () => {
                       range: [0.6, 1],
                       output: [0, 0.7],
                     }),
-                    backgroundImage: `url(${image})`,
+                    backgroundImage: `url(${slides[j].image})`,
                   }}
                 ></animated.div>
-                <animated.div
-                  className="slideContent"
-                  style={{
-                    backgroundImage: `url(${image})`,
-                    transform: interpolate([x, rot], trans),
-                    opacity,
-                  }}
-                >
-                  <div className="slideContentInner">
-                    <h2 className="slideTitle">
-                      {slides[i % slides.length].title}
-                    </h2>
-                    <h3 className="slideSubtitle">
-                      {slides[i % slides.length].subtitle}
-                    </h3>
-                    <p className="slideDescription">
-                      {slides[i % slides.length].description}
-                    </p>
-                  </div>
+               
+                  <animated.div
+                    className="slideContent"
+                    onMouseMove={({ clientX: x, clientY: y }) => set({ xys: calc(x, y) })}
+                    onMouseLeave={() => set({ xys: [0, 0, 1] })}
+                    style={{
+                      backgroundImage: `url(${slides[j].image})`,
+                      transform: interpolate([x, rot], trans),
+                      
+                      opacity,
+                    }}
+                  >
+                    <animated.div className="slideContentInner" 
+                        style={{
+                          opacity: opacity.interpolate({
+                            range: [0.6, 1],
+                            output: [0, 1],
+                          }),
+                          transform:text.interpolate(t=>`translate3d(0,calc(100% * ${t}), 2rem)`)
+                          ,}} >
+                      <h2 className="slideTitle">
+                        {slides[j].title}
+                      </h2>
+                      <h3 className="slideSubtitle">
+                        {slides[j].subtitle}
+                      </h3>
+                      <p className="slideDescription">
+                        {slides[j].description}
+                      </p>
+                    </animated.div>
                 </animated.div>
-              </animated.div>
+                </animated.div>
+            
             )
           })}
           <button className="prev" onClick={handlePrev}>
@@ -114,13 +142,17 @@ const Wrapper = styled.div`
     grid-area: 1/-1;
   }
 
+  
   .slideContent {
+    //border:2px solid red;
     width: 30vw;
     height: 40vw;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     transform-style: preserve-3d;
+    display:grid;
+    align-items:center;
   }
   .slideBackground {
     position: fixed;
@@ -131,6 +163,28 @@ const Wrapper = styled.div`
     background-size: cover;
     background-position: center center;
     z-index: -1;
+  }
+  .slideContentInner{
+    color: #fff;
+      transform-style:preserve-3d;
+      text-shadow: 0 0.1rem 1rem #000;
+
+  }
+  .slideSubtitle,
+  .slideTitle {
+    font-size:2rem;
+    font-weight:normal;
+    letter-spacing:0.2ch;
+    text-transform:uppercase;
+    margin:0;
+  }
+  .slideSubtitle::before {
+    content: "— ";
+  }
+  .slideDescription {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.2ch;
   }
 
   button {
