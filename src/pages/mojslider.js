@@ -49,6 +49,7 @@ const Mojslider = () => {
       <Wrapper>
         <div className="slides">
           {springs.map(({ x, rot, opacity }, i) => {
+            //i ide od 0 do 14
             let image = slides[i % slides.length].image
             return (
               <animated.div key={i} className="slide">
@@ -69,7 +70,19 @@ const Mojslider = () => {
                     transform: interpolate([x, rot], trans),
                     opacity,
                   }}
-                ></animated.div>
+                >
+                  <div className="slideContentInner">
+                    <h2 className="slideTitle">
+                      {slides[i % slides.length].title}
+                    </h2>
+                    <h3 className="slideSubtitle">
+                      {slides[i % slides.length].subtitle}
+                    </h3>
+                    <p className="slideDescription">
+                      {slides[i % slides.length].description}
+                    </p>
+                  </div>
+                </animated.div>
               </animated.div>
             )
           })}
