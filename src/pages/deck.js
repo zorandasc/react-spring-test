@@ -36,6 +36,7 @@ const Deck = () => {
     // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
     const bind=useDrag(({args:[index],down,movement:[xMove],direction:[xDir],velocity})=>{
         // If you flick hard enough it should trigger the card to fly out
+        console.log(index)
         const trigger=velocity >0.1
 
         // Direction should either point left or right
@@ -47,9 +48,12 @@ const Deck = () => {
 
         //i ide za sve springove
         setSprings(i=>{
-
+            console.log("index",index)
+        console.log("i",i)
             // We're only interested in changing spring-data for the current spring
-            if(index !=i) return
+            if(index !=i)  {
+                console.log("kurec")
+                return }
 
             //da li je dotaknuta karta, ubacena u niz za izbacaj
             const isGone = gone.has(index)

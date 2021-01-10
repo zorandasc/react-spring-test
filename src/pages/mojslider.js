@@ -7,7 +7,7 @@ import {
   interpolate,
   config,
 } from "react-spring"
-import { useDrag } from "react-use-gesture"
+import { useDrag, useMove, useHover, useGesture } from "react-use-gesture"
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
@@ -54,28 +54,30 @@ const Mojslider = () => {
     })
   )
 
-  const [props, set] = useSpring(() => ({
-    xys: [0, 0, 1],
-    config: { mass: 5, tension: 350, friction: 40 },
-  }))
-
-  const bind = useDrag(
-    ({
+  const bind=useGesture({
+   
+    onDrag:({
       args: [index],
-      down,
-      movement: [mx],
-      distance,
-      direction: [xDir],
-      velocity,
-    }) => {
-      console.log(down)
-      setSprings(i => {
-        if (index !== i) return
-        const scale = down ? 2 : 1
-        return { scale }
-      })
-    }
-  )
+      down,})=>{
+        setSprings(i => {
+        
+          //DA bi se specilo da se svi ne pomjeraju koristimo index==i
+          //odnosno ovim dobijamo da se samo jedan taknuti i pomjera
+          //a da bi se onemogucilo da se se susjedni ,rotiranin, na klik ne pomjeraju
+          //koristimo slides.length + (slideIndex.current - i)==0
+          if (index === i && slides.length + (slideIndex.current - i)==0) {
+            const scale = down ? 2 : 1
+            return { scale }
+            }
+          
+          return
+          
+        })
+      }
+  })
+
+
+  
 
   const handleNext = () => {
     slideIndex.current = (slideIndex.current + 1) % 5
