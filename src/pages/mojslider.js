@@ -2,18 +2,17 @@ import React, { useRef } from "react"
 import styled from "styled-components"
 import {
   useSprings,
-  useSpring,
   animated,
   interpolate,
   config,
 } from "react-spring"
-import { useDrag, useMove, useHover, useGesture } from "react-use-gesture"
+import { useGesture } from "react-use-gesture"
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
-const from = i => ({ xTrans: 0, rot: 0, opacity: 0, text: 1,  })
+const from = i => ({ xTrans: 0, rot: 0, opacity: 0,  })
 
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
@@ -21,7 +20,6 @@ const to = (i, slideIndex) => {
     xTrans: index,
     rot: index === 0 ? 0 : index > 0 ? 1 : -1,
     opacity: index === 0 ? 1 : 0.6,
-    text: index === 0 ? 0 : 1,
     scale: 1,
     xMouse:0,
     yMouse:0,
@@ -31,23 +29,19 @@ const to = (i, slideIndex) => {
 const trans = (xTrans, xMouse, yMouse, r, s) =>
   `perspective(1000px) translateX(calc(100% * ${xTrans})) rotateX(${xMouse}deg) rotateY(calc(-45deg*${r} + ${yMouse}deg)) scale(${s}) `
 
-const calc = (x, y) => [
-  -(y - window.innerHeight / 2) / 20,
-  (x - window.innerWidth / 2) / 20,
-  1.1,
-]
 
 
 const Mojslider = () => {
   //ne dovodi do rerenderovanja  komponente za razliku od usestate
   const slideIndex = useRef(0)
+  let current=slideIndex.current
 
   const [springs, setSprings] = useSprings(
     [...slides, ...slides, ...slides].length,
     i => ({
-      ...to(i, slideIndex.current),
+      ...to(i, current),
       from: { ...from(i) },
-      config: config.wobbly,
+      config: config.molasses,
     })
   )
 
@@ -55,16 +49,13 @@ const Mojslider = () => {
    
     onMove:({
       args: [index],
-      down,
       xy: [px, py]})=>{
-        //console.log("moving")
         setSprings(i => {
-         
           //DA bi se specilo da se svi ne pomjeraju koristimo index==i
           //odnosno ovim dobijamo da se samo jedan taknuti i pomjera
           //a da bi se onemogucilo da se se susjedni ,rotiranin, na klik ne pomjeraju
           //koristimo slides.length + (slideIndex.current - i)==0
-          if (index === i && slides.length + (slideIndex.current - i)==0) {
+          if (index === i && slides.length + (current - i)==0) {
             
             const xMouse=-(py - window.innerHeight / 2) / 10
             const yMouse=(px - window.innerWidth / 2) / 10
@@ -78,7 +69,7 @@ const Mojslider = () => {
       },
       onHover:()=>{   
         setSprings(i => {
-          return { xMouse:0,yMouse:0,scale:1 }
+          return { xMouse:0,yMouse:0,scale:1,config:config.molasses }
         })
       }
   })
@@ -87,20 +78,20 @@ const Mojslider = () => {
   
 
   const handleNext = () => {
-    slideIndex.current = (slideIndex.current + 1) % 5
-    setSprings(i => ({ ...to(i, slideIndex.current) }))
+    current = (current + 1) % slides.length
+    setSprings(i => ({ ...to(i, current)}))
   }
   const handlePrev = () => {
-    slideIndex.current =
-      slideIndex.current === 0 ? slides.length - 1 : slideIndex.current - 1
-    setSprings(i => ({ ...to(i, slideIndex.current) }))
+    current =
+      current === 0 ? slides.length - 1 : current - 1
+    setSprings(i => ({ ...to(i, current)}))
   }
 
   return (
     <Layout>
       <Wrapper>
         <div className="slides">
-          {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, text, scale }, i) => {
+          {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, scale }, i) => {
             //i ide od 0 do 14
             //prave vrijednosti,  se ponavljaju da bi se dobio efekat
             //kontinualnosti, stog j ide
@@ -114,7 +105,7 @@ const Mojslider = () => {
                   style={{
                     opacity: opacity.interpolate({
                       range: [0.6, 1],
-                      output: [0, 0.7],
+                      output: [0, .9],
                     }),
                     backgroundImage: `url(${slides[j].image})`,
                     transform:rot.interpolate(r=>`translateX(calc(10% * ${r}))`)
@@ -138,8 +129,8 @@ const Mojslider = () => {
                         range: [0.6, 1],
                         output: [0, 1],
                       }),
-                      transform: text.interpolate(
-                        t => `translate3d(0,calc(100% * ${t}), 4rem)`
+                      transform: rot.interpolate(
+                        t => `translate3d(0,calc(80% *(-1)* ${t}), 4rem)`
                       ),
                     }}
                   >
@@ -202,7 +193,18 @@ const Wrapper = styled.div`
     background-position: center center;
     z-index: -1;
   }
+  .slideBackground::before {
+    content: "";
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;}
+
   .slideContentInner {
+    padding-left:4rem;
     color: #fff;
     transform-style: preserve-3d;
     text-shadow: 0 0.1rem 1rem #000;
@@ -235,7 +237,7 @@ const Wrapper = styled.div`
     top: 50%;
     transform: translateY(-50%);
     opacity: 0.8;
-    z-index: 5;
+    z-index: 2;
     cursor: pointer;
   }
   .prev {
