@@ -7,12 +7,13 @@ import {
   interpolate,
   config,
 } from "react-spring"
+import { useDrag } from "react-use-gesture"
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
-const from = i => ({ x: 0, rot: 0, opacity: 0, text: 1 })
+const from = i => ({ x: 0, rot: 0, opacity: 0, text: 1, scale: 0.5 })
 
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
@@ -21,11 +22,12 @@ const to = (i, slideIndex) => {
     rot: index === 0 ? 0 : index > 0 ? 1 : -1,
     opacity: index === 0 ? 1 : 0.6,
     text: index === 0 ? 0 : 1,
+    scale: 1,
   }
 }
 
-const trans = (x, r) =>
-  `perspective(1000px) translateX(calc(100% * ${x})) rotateY(calc(-45deg*${r}))`
+const trans = (x, r, s) =>
+  `perspective(1000px) translateX(calc(100% * ${x})) rotateY(calc(-45deg*${r})) scale(${s}) `
 
 const calc = (x, y) => [
   -(y - window.innerHeight / 2) / 20,
@@ -57,6 +59,24 @@ const Mojslider = () => {
     config: { mass: 5, tension: 350, friction: 40 },
   }))
 
+  const bind = useDrag(
+    ({
+      args: [index],
+      down,
+      movement: [mx],
+      distance,
+      direction: [xDir],
+      velocity,
+    }) => {
+      console.log(down)
+      setSprings(i => {
+        if (index !== i) return
+        const scale = down ? 2 : 1
+        return { scale }
+      })
+    }
+  )
+
   const handleNext = () => {
     slideIndex.current = (slideIndex.current + 1) % 5
     setSprings(i => ({ ...to(i, slideIndex.current) }))
@@ -71,7 +91,7 @@ const Mojslider = () => {
     <Layout>
       <Wrapper>
         <div className="slides">
-          {springs.map(({ x, rot, opacity, text }, i) => {
+          {springs.map(({ x, rot, opacity, text, scale }, i) => {
             //i ide od 0 do 14
             //prave vrijednosti,  se ponavljaju da bi se dobio efekat
             //kontinualnosti, stog j ide
@@ -91,15 +111,11 @@ const Mojslider = () => {
                 ></animated.div>
 
                 <animated.div
+                  {...bind(i)}
                   className="slideContent"
-                  onMouseMove={({ clientX: x, clientY: y }) =>
-                    set({ xys: calc(x, y) })
-                  }
-                  onMouseLeave={() => set({ xys: [0, 0, 1] })}
                   style={{
                     backgroundImage: `url(${slides[j].image})`,
-                    transform: interpolate([x, rot], trans),
-
+                    transform: interpolate([x, rot, scale], trans),
                     opacity,
                   }}
                 >
