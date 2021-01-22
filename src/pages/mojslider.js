@@ -48,6 +48,8 @@ const Mojslider = () => {
   //ne dovodi do rerenderovanja  komponente za razliku od usestate
   const slideIndex = useRef(0)
   let current = slideIndex.current
+  const height = document.documentElement.scrollHeight
+  console.log("height",height)
 
   const [springs, setSprings] = useSprings(
     [...slides, ...slides, ...slides].length,
@@ -89,7 +91,8 @@ const Mojslider = () => {
   })
   
   useScroll(({ xy: [, y] }) =>{
-    if(y>500 && y<800){
+    console.log(height)
+    if(y>height-100 && y<800){
       return setSprings(i => ({...to1(i, current),config: config.wobbly }))
     }
     return setSprings(i => ({...to(i, current),config: config.gentle}))
@@ -99,7 +102,7 @@ const Mojslider = () => {
 
 
   const [{ width }, set] = useSpring(() => ({ width: '0%' }))
-  const height = document.documentElement.scrollHeight
+  
 
   useScroll(({ xy: [, y] }) => set({ width: (y / height) * 100 + '%' }), { domTarget: window })
   
