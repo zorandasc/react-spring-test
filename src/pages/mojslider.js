@@ -1,6 +1,5 @@
 import React, { useRef } from "react"
 import styled from "styled-components"
-<<<<<<< HEAD
 import {
   useSprings,
   useSpring,
@@ -9,16 +8,12 @@ import {
   config,
 } from "react-spring"
 import { useGesture, useScroll } from "react-use-gesture"
-=======
-import { useSprings, animated, interpolate, config } from "react-spring"
-import { useGesture } from "react-use-gesture"
->>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
-const from = i => ({ xTrans: 0, rot: 0, opacity: 0 })
+//const from = i => ({ xTrans: 0, rot: 0, opacity: 0 })
 
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
@@ -41,6 +36,7 @@ const to1 = (i, slideIndex) => {
     scale: 1,
     xMouse: 0,
     yMouse: 0,
+    //delay: i * 10
   }
 }
 
@@ -57,8 +53,8 @@ const Mojslider = () => {
     [...slides, ...slides, ...slides].length,
     i => ({
       ...to(i, current),
-      from: { ...from(i) },
-      config: config.molasses,
+      //from: { ...from(i) },
+      //config: config.molasses,
     })
   )
 
@@ -93,7 +89,7 @@ const Mojslider = () => {
   })
   
   useScroll(({ xy: [, y] }) =>{
-    if(y>600 && y<900){
+    if(y>500 && y<800){
       return setSprings(i => ({...to1(i, current),config: config.wobbly }))
     }
     return setSprings(i => ({...to(i, current),config: config.gentle}))
@@ -102,7 +98,6 @@ const Mojslider = () => {
   )
 
 
-<<<<<<< HEAD
   const [{ width }, set] = useSpring(() => ({ width: '0%' }))
   const height = document.documentElement.scrollHeight
 
@@ -117,42 +112,24 @@ const Mojslider = () => {
     current =
       current === 0 ? slides.length - 1 : current - 1
     setSprings(i => ({ ...to1(i, current)}))
-=======
-  const handleNext = () => {
-    current = (current + 1) % slides.length
-    setSprings(i => ({ ...to(i, current) }))
-  }
-  const handlePrev = () => {
-    current = current === 0 ? slides.length - 1 : current - 1
-    setSprings(i => ({ ...to(i, current) }))
->>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
   }
 
   return (
     <Layout>
       <Wrapper>
-<<<<<<< HEAD
       <div className="drugiSektor">
         <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
         </div>
         <div className="slides" >
           {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, scale }, i) => {
-=======
-        <div className="slides">
-          {springs.map(({ xTrans, xMouse, yMouse, rot, opacity, scale }, i) => {
->>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
             //i ide od 0 do 14
             //prave vrijednosti,  se ponavljaju da bi se dobio efekat
             //kontinualnosti, stog j ide
             let j = i % slides.length
             //j ide od 0 do 4
             return (
-<<<<<<< HEAD
               <animated.div key={i} className="slide"  style={{width}}
               >
-=======
-              <animated.div key={i} className="slide">
->>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
                 <animated.div
                   className="slideBackground"
                   style={{
