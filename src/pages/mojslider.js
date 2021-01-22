@@ -2,11 +2,12 @@ import React, { useRef } from "react"
 import styled from "styled-components"
 import {
   useSprings,
+  useSpring,
   animated,
   interpolate,
   config,
 } from "react-spring"
-import { useGesture } from "react-use-gesture"
+import { useGesture, useScroll } from "react-use-gesture"
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
@@ -17,6 +18,18 @@ const from = i => ({ xTrans: 0, rot: 0, opacity: 0,  })
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
   return {
+    xTrans: 0,
+    rot: 0,
+    opacity: index === 0 ? 1 : 0.6,
+    scale: 1,
+    xMouse:0,
+    yMouse:0,
+  }
+}
+
+const to1 = (i, slideIndex) => {
+  let index = slides.length + (slideIndex - i)
+  return {
     xTrans: index,
     rot: index === 0 ? 0 : index > 0 ? 1 : -1,
     opacity: index === 0 ? 1 : 0.6,
@@ -25,6 +38,7 @@ const to = (i, slideIndex) => {
     yMouse:0,
   }
 }
+
 
 const trans = (xTrans, xMouse, yMouse, r, s) =>
   `perspective(1000px) translateX(calc(100% * ${xTrans})) rotateX(${xMouse}deg) rotateY(calc(-45deg*${r} + ${yMouse}deg)) scale(${s}) `
@@ -73,24 +87,40 @@ const Mojslider = () => {
         })
       }
   })
+  
+  useScroll(({ xy: [, y] }) =>{
+    if(y>600 && y<900){
+      return setSprings(i => ({...to1(i, current),config: config.wobbly }))
+    }
+    return setSprings(i => ({...to(i, current),config: config.gentle}))
+    }, 
+    { domTarget: window,   }
+  )
 
 
+  const [{ width }, set] = useSpring(() => ({ width: '0%' }))
+  const height = document.documentElement.scrollHeight
+
+  useScroll(({ xy: [, y] }) => set({ width: (y / height) * 100 + '%' }), { domTarget: window })
   
 
   const handleNext = () => {
     current = (current + 1) % slides.length
-    setSprings(i => ({ ...to(i, current)}))
+    setSprings(i => ({ ...to1(i, current)}))
   }
   const handlePrev = () => {
     current =
       current === 0 ? slides.length - 1 : current - 1
-    setSprings(i => ({ ...to(i, current)}))
+    setSprings(i => ({ ...to1(i, current)}))
   }
 
   return (
     <Layout>
       <Wrapper>
-        <div className="slides">
+      <div className="drugiSektor">
+        <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
+        </div>
+        <div className="slides" >
           {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, scale }, i) => {
             //i ide od 0 do 14
             //prave vrijednosti,  se ponavljaju da bi se dobio efekat
@@ -98,7 +128,7 @@ const Mojslider = () => {
             let j = i % slides.length
             //j ide od 0 do 4
             return (
-              <animated.div key={i} className="slide" 
+              <animated.div key={i} className="slide"  style={{width}}
               >
                 <animated.div
                   className="slideBackground"
@@ -149,7 +179,9 @@ const Mojslider = () => {
             NEXT
           </button>
         </div>
-        <div className="drugiSektor"></div>
+        <div className="drugiSektor">
+        <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
+        </div>
       </Wrapper>
     </Layout>
   )
@@ -159,6 +191,10 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   position: relative;
+  .kurec{
+    height:100px;
+    background-color:lightskyblue;
+  }
   .slides {
     width: 100vw;
     height: 100vh;
@@ -168,6 +204,8 @@ const Wrapper = styled.div`
   }
   .slide {
     grid-area: 1/-1;
+    
+   
   }
 
   .slideContent {
@@ -234,7 +272,7 @@ const Wrapper = styled.div`
     font-size: 1rem;
     width: 5rem;
     height: 5rem;
-    top: 50%;
+    top: 150%;
     transform: translateY(-50%);
     opacity: 0.8;
     z-index: 2;

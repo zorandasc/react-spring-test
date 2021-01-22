@@ -4,6 +4,7 @@ import styled from "styled-components"
 import Layout from "../components/layout"
 
 import { useSpring, animated, interpolate } from "react-spring"
+import { useScroll } from "react-use-gesture"
 
 const Testpage = () => {
   const { o, xyz, color } = useSpring({
@@ -12,6 +13,12 @@ const Testpage = () => {
     xyz: [10, 20, 5],
     color: "green",
   })
+
+  const [{ width }, set] = useSpring(() => ({ width: '0%' }))
+  const height = document.documentElement.scrollHeight
+
+  useScroll(({ xy: [, y] }) => set({ width: (y / height) * 100 + '%' }), { domTarget: window })
+
 
   return (
     <Layout>
@@ -47,6 +54,10 @@ const Testpage = () => {
         >
           {o.interpolate(n => n.toFixed(2)) /* innerText interpolation ... */}
         </animated.div>
+      
+      </Wrapper>
+      <Wrapper>
+      <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
       </Wrapper>
     </Layout>
   )
@@ -59,6 +70,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  .kurec{
+    height:100px;
+    background-color:lightskyblue;
+  }
 `
 
 export default Testpage
