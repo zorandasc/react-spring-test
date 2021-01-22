@@ -1,5 +1,6 @@
 import React, { useRef } from "react"
 import styled from "styled-components"
+<<<<<<< HEAD
 import {
   useSprings,
   useSpring,
@@ -8,12 +9,16 @@ import {
   config,
 } from "react-spring"
 import { useGesture, useScroll } from "react-use-gesture"
+=======
+import { useSprings, animated, interpolate, config } from "react-spring"
+import { useGesture } from "react-use-gesture"
+>>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
 import slides from "../components/slideData"
 
-const from = i => ({ xTrans: 0, rot: 0, opacity: 0,  })
+const from = i => ({ xTrans: 0, rot: 0, opacity: 0 })
 
 const to = (i, slideIndex) => {
   let index = slides.length + (slideIndex - i)
@@ -34,21 +39,19 @@ const to1 = (i, slideIndex) => {
     rot: index === 0 ? 0 : index > 0 ? 1 : -1,
     opacity: index === 0 ? 1 : 0.6,
     scale: 1,
-    xMouse:0,
-    yMouse:0,
+    xMouse: 0,
+    yMouse: 0,
   }
 }
 
 
 const trans = (xTrans, xMouse, yMouse, r, s) =>
-  `perspective(1000px) translateX(calc(100% * ${xTrans})) rotateX(${xMouse}deg) rotateY(calc(-45deg*${r} + ${yMouse}deg)) scale(${s}) `
-
-
+  `perspective(1000px) translateX(calc(100% * ${xTrans})) rotateX(${xMouse}deg) rotateY(calc(-65deg*${r} + ${yMouse}deg)) scale(${s}) `
 
 const Mojslider = () => {
   //ne dovodi do rerenderovanja  komponente za razliku od usestate
   const slideIndex = useRef(0)
-  let current=slideIndex.current
+  let current = slideIndex.current
 
   const [springs, setSprings] = useSprings(
     [...slides, ...slides, ...slides].length,
@@ -59,33 +62,34 @@ const Mojslider = () => {
     })
   )
 
-  const bind=useGesture({
-   
-    onMove:({
-      args: [index],
-      xy: [px, py]})=>{
+  const bind = useGesture({
+    onMove: ({ args: [index], xy: [px, py] }) => {
+      setSprings(i => {
+        //DA bi se specilo da se svi ne pomjeraju koristimo index==i
+        //odnosno ovim dobijamo da se samo jedan taknuti i pomjera
+        //a da bi se onemogucilo da se se susjedni ,rotiranin, na klik ne pomjeraju
+        //koristimo slides.length + (slideIndex.current - i)==0
+        if (index === i && slides.length + (current - i) == 0) {
+          const xMouse = -(py - window.innerHeight / 2) / 10
+          const yMouse = (px - window.innerWidth / 2) / 10
+          const scale = 1.2
+          return {
+            xMouse,
+            yMouse,
+            scale,
+            config: { mass: 5, tension: 350, friction: 40 },
+          }
+        }
+
+        return
+      })
+    },
+    onHover: ({ hovering }) => {
+      !hovering &&
         setSprings(i => {
-          //DA bi se specilo da se svi ne pomjeraju koristimo index==i
-          //odnosno ovim dobijamo da se samo jedan taknuti i pomjera
-          //a da bi se onemogucilo da se se susjedni ,rotiranin, na klik ne pomjeraju
-          //koristimo slides.length + (slideIndex.current - i)==0
-          if (index === i && slides.length + (current - i)==0) {
-            
-            const xMouse=-(py - window.innerHeight / 2) / 10
-            const yMouse=(px - window.innerWidth / 2) / 10
-            const scale = 1.2
-            return { xMouse,yMouse,scale,  config: { mass: 5, tension: 350, friction: 40 } }
-            }
-          
-          return
-          
-        },)
-      },
-      onHover:()=>{   
-        setSprings(i => {
-          return { xMouse:0,yMouse:0,scale:1,config:config.molasses }
+          return { xMouse: 0, yMouse: 0, scale: 1, config: config.molasses }
         })
-      }
+    },
   })
   
   useScroll(({ xy: [, y] }) =>{
@@ -98,6 +102,7 @@ const Mojslider = () => {
   )
 
 
+<<<<<<< HEAD
   const [{ width }, set] = useSpring(() => ({ width: '0%' }))
   const height = document.documentElement.scrollHeight
 
@@ -112,33 +117,53 @@ const Mojslider = () => {
     current =
       current === 0 ? slides.length - 1 : current - 1
     setSprings(i => ({ ...to1(i, current)}))
+=======
+  const handleNext = () => {
+    current = (current + 1) % slides.length
+    setSprings(i => ({ ...to(i, current) }))
+  }
+  const handlePrev = () => {
+    current = current === 0 ? slides.length - 1 : current - 1
+    setSprings(i => ({ ...to(i, current) }))
+>>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
   }
 
   return (
     <Layout>
       <Wrapper>
+<<<<<<< HEAD
       <div className="drugiSektor">
         <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
         </div>
         <div className="slides" >
           {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, scale }, i) => {
+=======
+        <div className="slides">
+          {springs.map(({ xTrans, xMouse, yMouse, rot, opacity, scale }, i) => {
+>>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
             //i ide od 0 do 14
             //prave vrijednosti,  se ponavljaju da bi se dobio efekat
             //kontinualnosti, stog j ide
             let j = i % slides.length
             //j ide od 0 do 4
             return (
+<<<<<<< HEAD
               <animated.div key={i} className="slide"  style={{width}}
               >
+=======
+              <animated.div key={i} className="slide">
+>>>>>>> 1a5d222f436cafdf5fd089b9b6cfbf68ab54b533
                 <animated.div
                   className="slideBackground"
                   style={{
                     opacity: opacity.interpolate({
                       range: [0.6, 1],
-                      output: [0, .9],
+                      output: [0, 0.9],
                     }),
                     backgroundImage: `url(${slides[j].image})`,
-                    transform:rot.interpolate(r=>`translateX(calc(10% * ${r}))`)
+                    transform: rot.interpolate(
+                      r => `translateX(calc(10% * ${r}))`
+                    ),
                   }}
                 ></animated.div>
 
@@ -146,9 +171,11 @@ const Mojslider = () => {
                   {...bind(i)}
                   className="slideContent"
                   style={{
-                    
                     backgroundImage: `url(${slides[j].image})`,
-                    transform: interpolate([xTrans, xMouse,yMouse, rot, scale], trans),
+                    transform: interpolate(
+                      [xTrans, xMouse, yMouse, rot, scale],
+                      trans
+                    ),
                     opacity,
                   }}
                 >
@@ -239,10 +266,11 @@ const Wrapper = styled.div`
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index: -1;}
+    z-index: -1;
+  }
 
   .slideContentInner {
-    padding-left:4rem;
+    padding-left: 4rem;
     color: #fff;
     transform-style: preserve-3d;
     text-shadow: 0 0.1rem 1rem #000;
