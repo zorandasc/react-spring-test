@@ -7,7 +7,9 @@ import {
   interpolate,
   config,
 } from "react-spring"
-import { useGesture, useScroll } from "react-use-gesture"
+import { useGesture, useScroll } from "react-use-gesture";
+import VisibilitySensor from "react-visibility-sensor";
+
 
 import Layout from "../components/layout"
 //import Slide from "../components/Slide"
@@ -49,7 +51,7 @@ const Mojslider = () => {
   const slideIndex = useRef(0)
   let current = slideIndex.current
   const height = document.documentElement.scrollHeight
-  console.log("height",height)
+  //console.log("height",height)
 
   const [springs, setSprings] = useSprings(
     [...slides, ...slides, ...slides].length,
@@ -90,6 +92,7 @@ const Mojslider = () => {
     },
   })
   
+  /*
   useScroll(({ xy: [, y] }) =>{
     console.log(height)
     if(y>height-100 && y<800){
@@ -100,10 +103,9 @@ const Mojslider = () => {
     { domTarget: window,   }
   )
 
-
+*/
+//ovo je samo testni div
   const [{ width }, set] = useSpring(() => ({ width: '0%' }))
-  
-
   useScroll(({ xy: [, y] }) => set({ width: (y / height) * 100 + '%' }), { domTarget: window })
   
 
@@ -117,12 +119,17 @@ const Mojslider = () => {
     setSprings(i => ({ ...to1(i, current)}))
   }
 
+  function onChange (isVisible) {
+    console.log('Element is now %s', isVisible ? 'visible' : 'hidden');
+  }
+
   return (
     <Layout>
       <Wrapper>
-      <div className="drugiSektor">
-        <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
+        <div className="drugiSektor">
+          <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
         </div>
+        
         <div className="slides" >
           {springs.map(({ xTrans, xMouse,yMouse, rot, opacity, scale }, i) => {
             //i ide od 0 do 14
@@ -131,7 +138,8 @@ const Mojslider = () => {
             let j = i % slides.length
             //j ide od 0 do 4
             return (
-              <animated.div key={i} className="slide"  style={{width}}
+              <VisibilitySensor key={i} onChange={onChange}>
+              <animated.div  className="slide"  style={{width}}
               >
                 <animated.div
                   className="slideBackground"
@@ -177,7 +185,8 @@ const Mojslider = () => {
                   </animated.div>
                 </animated.div>
               </animated.div>
-            )
+           </VisibilitySensor>
+           )
           })}
           <button className="prev" onClick={handlePrev}>
             PREV
@@ -186,6 +195,7 @@ const Mojslider = () => {
             NEXT
           </button>
         </div>
+        
         <div className="drugiSektor">
         <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
         </div>

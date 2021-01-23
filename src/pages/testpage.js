@@ -5,6 +5,8 @@ import Layout from "../components/layout"
 
 import { useSpring, animated, interpolate } from "react-spring"
 import { useScroll } from "react-use-gesture"
+import VisibilitySensor from "react-visibility-sensor";
+
 
 const Testpage = () => {
   const { o, xyz, color } = useSpring({
@@ -18,6 +20,10 @@ const Testpage = () => {
   const height = document.documentElement.scrollHeight
 
   useScroll(({ xy: [, y] }) => set({ width: (y / height) * 100 + '%' }), { domTarget: window })
+
+  function onChange (isVisible) {
+    console.log('Element is now %s', isVisible ? 'visible' : 'hidden');
+  }
 
 
   return (
@@ -57,7 +63,9 @@ const Testpage = () => {
       
       </Wrapper>
       <Wrapper>
+      <VisibilitySensor onChange={onChange}>
       <animated.div className="kurec" style={{ width }} >KUREC</animated.div>
+      </VisibilitySensor>
       </Wrapper>
     </Layout>
   )
