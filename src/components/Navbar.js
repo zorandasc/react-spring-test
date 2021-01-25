@@ -69,6 +69,9 @@ const Navbar = () => {
         <li>
           <Link to="/mojslider">MOJSLIDONJA</Link>
         </li>
+        <li>
+          <Link to="/gridPage">GRIDPAGE</Link>
+        </li>
       </ul>
     </Wrapper>
   )
@@ -95,7 +98,7 @@ const Wrapper = styled.nav`
   .lista {
     list-style: none;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     li {
       margin-left: 1rem;
       font-size: 1rem;
