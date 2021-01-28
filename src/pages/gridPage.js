@@ -6,36 +6,52 @@ import { Slug, Fade } from '../components/grid/GridPrimitives'
 import data from "../constants/gridData"
 import styled from "../components/grid/gridPage.module.css"
 
+//cell vrsi tranziju na gore
 class Cell extends Component {
     render(){
         const {toggle, active , name, description, css}=this.props
         return (
             <div 
                 className={styled.cell} 
-                style={{backgroundImage:css}}>
-                    <div className={styled.details}>
-                        <div className={styled.circle} style={{background:css}}></div>
-                        <div className={styled.close}>
-                            <span style={{cursor:"pointer"}}>X</span>
+                style={{backgroundImage:css,cursor: !active ? 'pointer' : 'auto'}}
+                //moze se kliknuti na celiju samo u pocetnom polozaju
+                onClick={!active?toggle:undefined}>
+                    <Fade show={active} delay={active ? 500 : 0}>
+                        <div className={styled.details}>
+                            <Slug delay={600}>
+                                <div className={styled.circle} style={{background:css}}></div>
+                                <div className={styled.close}>
+                                    <span 
+                                        style={{cursor:"pointer"}} 
+                                        onClick={toggle}>X</span>
+                                </div>
+                                <h1>{name}</h1>
+                                <p>{description}</p>
+                            </Slug>
                         </div>
-                        <h1>{name}</h1>
-                        <p>{description}</p>
-                    </div>
-                    <div className={styled.default}>
-                        <div style={{zIndex:1}}>{name}</div>
-                    </div>
+                    </Fade>
+                    <Fade 
+                        show={!active}
+                        from={{ opacity: 0, transform: 'translate3d(0,140px,0)' }}
+                        enter={{ opacity: 1, transform: 'translate3d(0,0px,0)' }}
+                        leave={{ opacity: 0, transform: 'translate3d(0,-50px,0)' }}
+                        delay={active ? 0 : 400}>
+                        <div className={styled.default}>
+                            <div style={{zIndex:1}}>{name}</div>
+                        </div>
+                    </Fade>
                 
             </div>)
     }
 }
 
 
-
+//grid vrsi tranziciju na desno
 export default class App extends Component {
        state={data}
         render(){
             return (
-                <main className={styled.main}>
+             
                     <Grid 
                         className={styled.grid}
                         // Arbitrary data, should contain keys, possibly heights, etc.
@@ -53,16 +69,15 @@ export default class App extends Component {
                         // Delay when active elements (blown up) are minimized again
                         closeDelay={500}
                         // Regular react-spring configs
-                        config={config.slow}
-                        >
-                        {data.map(dat=>(
-                            <Cell key={dat.name} {...dat} active={false} toggle={false}>
-                            </Cell>
-                            )
-                          )
-                        }
+                        config={config.slow}>
+                        {/*JAKO VAZNO CHILDREN OD GRIDA JE FUNKCIJA
+                        KOJA PRIMA DATA ,ACTIVE TOGGLE A VRACA 
+                        CELLL*/}
+                        {(data, active,toggle)=>(
+                            <Cell {...data} active={active} toggle={toggle}></Cell>
+                        )}
                     </Grid>
-                </main>
+                
             )
                 
         }

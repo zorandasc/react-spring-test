@@ -41,7 +41,8 @@ export class Slug extends React.PureComponent{
                     keys={result.map((_,i)=>i)} 
                     from={from} 
                     to={to}
-                    {...rest}>
+                    {...rest}
+                    children={child=>child}>
 
                 </Trail>
 
@@ -55,9 +56,9 @@ export class Fade extends React.PureComponent {
         const {
             children,
             show,
-            from,
-            enter,
-            leave,    
+            from = { opacity: 0 },
+            enter = { opacity: 1 },
+            leave = { opacity: 0 },   
             ...rest
         }=this.props
         const {type, props}=children
@@ -77,11 +78,13 @@ export class Fade extends React.PureComponent {
         return (
             <Transition 
                 native
+                //toogle prikaza sa show
                 items={show}
                 {...rest}
                 from={from}
                 enter={enter}
                 leave={leave}
+                //dijeca su to jer je items togggler
                 children={show =>show && result}>
                 
             </Transition>)
